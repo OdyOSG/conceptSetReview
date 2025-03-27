@@ -68,7 +68,13 @@ def parse_markdown_table_block(table_text):
     return dict(zip(headers, data))
 
 
-async def evaluate_llm_model_async(prompt, llm_name, llm_instance, concept_id, concept_name):
+async def evaluate_llm_model_async(
+  prompt, 
+  llm_name, 
+  llm_instance, 
+  concept_id, 
+  concept_name
+  ):
     """
     Asynchronously calls an LLM model with retry logic and parses the output.
 
@@ -156,7 +162,12 @@ async def evaluate_llm_model_async(prompt, llm_name, llm_instance, concept_id, c
 
 
 
-async def run_llm_evaluations_async(final_df, llm_dict, system_prompt, clinical_prompt):
+async def run_llm_evaluations_async(
+          final_df, 
+          llm_dict, 
+          system_prompt, 
+          clinical_prompt
+          ):
     """
     Launches asynchronous LLM calls for each row in a DataFrame with incremental progress updates.
 
@@ -216,7 +227,7 @@ def validate_and_prepare_concept_dataframe(
     data_frame,
     concept_set_id,
     type_filter=("recommended", "resolved_standard", "resolved_source"),
-):
+    ):
     """
     Validates and prepares the input DataFrame for LLM processing.
 
@@ -272,7 +283,10 @@ def validate_and_prepare_concept_dataframe(
     return final_df
 
 
-def merge_llm_results_with_concepts(processed_df, data_frame):
+def merge_llm_results_with_concepts(
+    processed_df, 
+    data_frame
+    ):
     """
     Merges LLM evaluation results with the original concept details.
 
@@ -312,7 +326,11 @@ def merge_llm_results_with_concepts(processed_df, data_frame):
     return processed_df
 
 
-def write_results_to_delta_table(merged_df, table_name, spark_lock):
+def write_results_to_delta_table(
+    merged_df, 
+    table_name, 
+    spark_lock
+    ):
     """
     Writes the merged DataFrame to a Delta table using Spark.
 
@@ -338,7 +356,7 @@ def process_concept_reviews_async(
     system_prompt,
     clinical_prompt,
     type_filter=("recommended", "resolved_standard", "resolved_source"),
-):
+    ):
     """
     Orchestrates asynchronous processing of a concept set review.
 
@@ -383,15 +401,15 @@ def process_concept_reviews_async(
 
 
 async def process_conditions_async(
-    conditions,
-    table_name,
-    spark,
-    process_concept_reviews_async,
-    data_frame,
-    llm_dict,
-    system_prompt,
-    type_filter=("recommended", "resolved_standard", "resolved_source"),
-):
+          conditions,
+          table_name,
+          spark,
+          process_concept_reviews_async,
+          data_frame,
+          llm_dict,
+          system_prompt,
+          type_filter=("recommended", "resolved_standard", "resolved_source")
+          ):
     """
     Processes a list of clinical conditions incrementally by leveraging asynchronous review processing.
 
@@ -433,7 +451,10 @@ async def process_conditions_async(
     return existing_df
 
 
-def load_existing_delta_data(table_name, spark=None):
+def load_existing_delta_data(
+    table_name, 
+    spark=None
+    ):
     """
     Loads existing data from the specified Delta table.
 
@@ -465,17 +486,17 @@ def get_processed_concept_set_ids(existing_df):
 
 
 async def process_condition_async(
-    condition,
-    existing_df,
-    processed_concept_ids,
-    process_concept_reviews_async,
-    data_frame,
-    llm_dict,
-    system_prompt,
-    type_filter,
-    spark=None,
-    table_name,
-):
+          condition,
+          existing_df,
+          processed_concept_ids,
+          process_concept_reviews_async,
+          data_frame,
+          llm_dict,
+          system_prompt,
+          type_filter,
+          table_name,
+          spark=None
+          ):
     """
     Processes a single clinical condition by checking if it has already been processed and, if not,
     running asynchronous LLM evaluations and updating the Delta table.
@@ -516,7 +537,11 @@ async def process_condition_async(
     return cumulative_df
 
 
-def add_condition_columns_and_reorder(result_df, cond_name, concept_set_id):
+def add_condition_columns_and_reorder(
+    result_df, 
+    cond_name, 
+    concept_set_id
+    ):
     """
     Adds condition-specific columns to the result DataFrame and reorders the columns.
 
@@ -533,7 +558,11 @@ def add_condition_columns_and_reorder(result_df, cond_name, concept_set_id):
     return result_df[new_order]
 
 
-def update_delta_table_with_results(cumulative_df, table_name, spark=None):
+def update_delta_table_with_results(
+    cumulative_df, 
+    table_name, 
+    spark=None
+    ):
     """
     Writes the cumulative DataFrame to a Delta table and reads it back for verification.
 
@@ -559,9 +588,9 @@ def run_process_conditions(
     data_frame,
     llm_dict,
     system_prompt,
-    spark=None,
     type_filter=("resolved_standard", "resolved_source"),
-):
+    spark=None
+    ):
     """
     Orchestrates the complete asynchronous processing of clinical conditions.
 
