@@ -4,12 +4,6 @@ from setuptools import setup, find_packages
 import os
 import re
 import time
-# import logging
-# import asyncio
-# import threading
-# from datetime import datetime
-# import nest_asyncio
-
 
 setup(
     name="conceptSetReview",  
@@ -23,7 +17,6 @@ setup(
     packages=find_packages(),  
     install_requires=[
       "pyspark",
-      #"numpy",
       "pandas",
       "pydantic",
       "langchain_openai"

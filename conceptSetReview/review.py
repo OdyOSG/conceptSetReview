@@ -27,6 +27,7 @@ def extract_first_markdown_table(text):
             in_table = True
         elif in_table:
             break
+          
     return "\n".join(table_lines)
 
 
@@ -69,12 +70,12 @@ def parse_markdown_table_block(table_text):
 
 
 async def evaluate_llm_model_async(
-  prompt, 
-  llm_name, 
-  llm_instance, 
-  concept_id, 
-  concept_name
-  ):
+    prompt, 
+    llm_name, 
+    llm_instance, 
+    concept_id, 
+    concept_name
+    ):
     """
     Asynchronously calls an LLM model with retry logic and parses the output.
 
@@ -160,14 +161,12 @@ async def evaluate_llm_model_async(
     }
 
 
-
-
 async def run_llm_evaluations_async(
-          final_df, 
-          llm_dict, 
-          system_prompt, 
-          clinical_prompt
-          ):
+    final_df, 
+    llm_dict, 
+    system_prompt, 
+    clinical_prompt
+    ):
     """
     Launches asynchronous LLM calls for each row in a DataFrame with incremental progress updates.
 
@@ -197,7 +196,6 @@ async def run_llm_evaluations_async(
             tasks.append(
                 evaluate_llm_model_async(prompt, llm_name, llm_instance, concept_id, concept_name)
             )
-
 
     total_tasks = len(tasks)
     completed_tasks = 0
@@ -280,6 +278,7 @@ def validate_and_prepare_concept_dataframe(
         columns={"synonyms": "concept_synonym", "ancestors": "concept_ancestor"}
     )
     final_df = filtered_df[["concept_id", "concept_name", "text"]].copy()
+    
     return final_df
 
 
@@ -345,6 +344,7 @@ def write_results_to_delta_table(
         merged_df = spark.sql(f"SELECT * FROM {table_name}").toPandas()
     except Exception as e:
         logging.error(f"Error writing to Delta table: {e}")
+        
     return merged_df
 
 
@@ -397,19 +397,20 @@ def process_concept_reviews_async(
     merged_df = write_results_to_delta_table(merged_df, table_name, spark_lock)
 
     logging.info("Completed asynchronous processing of concept set reviews.")
+    
     return merged_df
 
 
 async def process_conditions_async(
-          conditions,
-          table_name,
-          spark,
-          process_concept_reviews_async,
-          data_frame,
-          llm_dict,
-          system_prompt,
-          type_filter=("recommended", "resolved_standard", "resolved_source")
-          ):
+    conditions,
+    table_name,
+    spark,
+    process_concept_reviews_async,
+    data_frame,
+    llm_dict,
+    system_prompt,
+    type_filter=("recommended", "resolved_standard", "resolved_source")
+    ):
     """
     Processes a list of clinical conditions incrementally by leveraging asynchronous review processing.
 
@@ -448,6 +449,7 @@ async def process_conditions_async(
             spark=spark,
             table_name=table_name,
         )
+        
     return existing_df
 
 
@@ -486,17 +488,17 @@ def get_processed_concept_set_ids(existing_df):
 
 
 async def process_condition_async(
-          condition,
-          existing_df,
-          processed_concept_ids,
-          process_concept_reviews_async,
-          data_frame,
-          llm_dict,
-          system_prompt,
-          type_filter,
-          table_name,
-          spark=None
-          ):
+    condition,
+    existing_df,
+    processed_concept_ids,
+    process_concept_reviews_async,
+    data_frame,
+    llm_dict,
+    system_prompt,
+    type_filter,
+    table_name,
+    spark=None
+    ):
     """
     Processes a single clinical condition by checking if it has already been processed and, if not,
     running asynchronous LLM evaluations and updating the Delta table.
@@ -534,6 +536,7 @@ async def process_condition_async(
     print(
         f"Processed and saved output for {cond_name} (concept_set_id: {concept_set_id})."
     )
+    
     return cumulative_df
 
 
@@ -555,6 +558,7 @@ def add_condition_columns_and_reorder(
         if col in cols:
             cols.remove(col)
     new_order = ["condition", "concept_set_id"] + cols
+    
     return result_df[new_order]
 
 
@@ -578,6 +582,7 @@ def update_delta_table_with_results(
         cumulative_df = spark.sql(f"SELECT * FROM {table_name}").toPandas()
     except Exception as e:
         logging.error(f"Error writing to Delta table: {e}")
+        
     return cumulative_df
 
 
@@ -633,3 +638,56 @@ def run_process_conditions(
                 type_filter=type_filter,
             )
         )
+
+
+def getLLMmodel(
+    dial_key,
+    temperature=0.0, 
+    azure_endpoint="https://ai-proxy.lab.epam.com", 
+    api_version="2024-08-01-preview",
+    llm_model=None
+    ):
+
+    from langchain_openai import AzureChatOpenAI
+    
+    if llm_model is None:
+         llm_dict = {
+              "claude_sonnet": AzureChatOpenAI(
+                  api_key=dial_key,
+                  api_version=api_version,
+                  azure_endpoint=azure_endpoint,
+                  model="anthropic.claude-v3-sonnet",
+                  temperature=temperature,
+              ),
+              "gpt-4o-full": AzureChatOpenAI(
+                  api_key=dial_key,
+                  api_version=api_version,
+                  azure_endpoint=azure_endpoint,
+                  model="gpt-4o",
+                  temperature=temperature,
+              )
+                  }
+    elif llm_model == "claude":
+           llm_dict = {
+                "claude_sonnet": AzureChatOpenAI(
+                    api_key=dial_key,
+                    api_version=api_version,
+                    azure_endpoint=azure_endpoint,
+                    model="anthropic.claude-v3-sonnet",
+                    temperature=temperature,
+                )
+                      }
+    elif llm_model == "gpt-4o-full":
+           llm_dict =  {
+                "gpt-4o-full": AzureChatOpenAI(
+                    api_key=dial_key,
+                    api_version=api_version,
+                    azure_endpoint=azure_endpoint,
+                    model="gpt-4o",
+                    temperature=temperature,
+                )
+                       }
+    else:
+      print("Wrong LLM model selected.")
+  
+    return llm_dict
