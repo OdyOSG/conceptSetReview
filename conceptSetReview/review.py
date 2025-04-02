@@ -590,7 +590,7 @@ def update_delta_table_with_results(
 def run_process_conditions(
     conditions,
     table_name,
-    process_concept_reviews_async,
+    process_concept_reviews_async=process_concept_reviews_async,
     data_frame,
     llm_dict,
     system_prompt,
