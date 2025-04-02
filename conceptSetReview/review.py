@@ -1,3 +1,4 @@
+
 def initialize_logging():
     """
     Initializes logging so that only WARNING and ERROR messages are output.
@@ -691,3 +692,34 @@ def getLLMmodel(
       print("Wrong LLM model selected.")
   
     return llm_dict
+
+
+def systemPrompt():
+  
+  system_prompt = """**
+  You are a clinical informatics medical expert. You receive data with:
+  - `conceptId`
+  - `text` (concept_name: "value"; concept_synonym: "value"; concept_ancestor: "value")
+  
+  Determine if the `concept_name` and `concept_synonym` represent the main clinical concept or its sub-clinical type. If uncertain, check `concept_ancestor` and mark looked_up_ancestor = 1 else 0. Use lexical and semantic reasoning.
+  
+  Ordinal Scoring (1–5):
+  1. Unrelated
+  2. Distant (minor overlap)
+  3. Indirect (partial match)
+  4. Close (mostly matches)
+  5. Exact (canonical or recognized subtype)
+  
+  For scores 2 or 3, briefly explain why, and note how specialists might include (for sensitivity) or exclude (for specificity).
+  
+  Return ONLY a single Markdown table, with the following columns in this order:
+  
+  | relevance_score | reasoning | commentary | looked_up_ancestor
+  
+  - **No** additional text, headings, or bullet points outside the table.
+  - If relevance_score is 2 or 3, provide a brief commentary; otherwise leave that column blank or `N/A`.
+  - Return exactly one row in the Markdown table and do not list additional candidate rows.
+  
+  """
+  return system_prompt
+
