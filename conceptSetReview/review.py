@@ -666,6 +666,13 @@ def getLLMmodel(
                   azure_endpoint=azure_endpoint,
                   model="gpt-4o",
                   temperature=temperature,
+              ),
+              "deepseek-r1": AzureChatOpenAI(
+                  api_key=dial_key,
+                  api_version=api_version,
+                  azure_endpoint=azure_endpoint,
+                  model="deepseek-r1",
+                  temperature=temperature,
               )
                   }
     elif llm_model == "claude":
@@ -685,6 +692,16 @@ def getLLMmodel(
                     api_version=api_version,
                     azure_endpoint=azure_endpoint,
                     model="gpt-4o",
+                    temperature=temperature,
+                )
+                       }
+    elif llm_model == "deepseek-r1":
+           llm_dict =  {
+                "deepseek-r1": AzureChatOpenAI(
+                    api_key=dial_key,
+                    api_version=api_version,
+                    azure_endpoint=azure_endpoint,
+                    model="deepseek-r1",
                     temperature=temperature,
                 )
                        }
