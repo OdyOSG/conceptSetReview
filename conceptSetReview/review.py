@@ -645,7 +645,7 @@ def getLLMmodel(
     dial_key,
     temperature=0.0, 
     azure_endpoint="https://ai-proxy.lab.epam.com", 
-    api_version="2024-08-01-preview",
+    api_version="2024-12-01-preview",
     llm_model=None
     ):
 
