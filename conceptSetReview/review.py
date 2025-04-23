@@ -705,13 +705,13 @@ def getLLMmodel(
                     temperature=temperature,
                 )
                        }
-    elif llm_model == "Mistral-7B-Instruct":
+    elif llm_model == "rlab-mistral-instruct":
            llm_dict =  {
-                "Mistral-7B-Instruct": AzureChatOpenAI(
+                "rlab-mistral-instruct": AzureChatOpenAI(
                     api_key=dial_key,
                     api_version=api_version,
                     azure_endpoint=azure_endpoint,
-                    model="Mistral-7B-Instruct",
+                    model="rlab-mistral-instruct",
                     temperature=temperature,
                 )
                        }
