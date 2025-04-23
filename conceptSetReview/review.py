@@ -705,13 +705,13 @@ def getLLMmodel(
                     temperature=temperature,
                 )
                        }
-    elif llm_model == "gemini-1.5-flash-001":
+    elif llm_model == "DeepSeek-R1-Distill-Llama-70B-FP8":
            llm_dict =  {
-                "gemini-1.5-flash-001": AzureChatOpenAI(
+                "DeepSeek-R1-Distill-Llama-70B-FP8": AzureChatOpenAI(
                     api_key=dial_key,
                     api_version=api_version,
                     azure_endpoint=azure_endpoint,
-                    model="gemini-1.5-flash-001",
+                    model="DeepSeek-R1-Distill-Llama-70B-FP8",
                     temperature=temperature,
                 )
                        }
