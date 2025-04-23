@@ -705,6 +705,16 @@ def getLLMmodel(
                     temperature=temperature,
                 )
                        }
+    elif llm_model == "gemini-1.5-flash-001":
+           llm_dict =  {
+                "gemini-1.5-flash-001": AzureChatOpenAI(
+                    api_key=dial_key,
+                    api_version=api_version,
+                    azure_endpoint=azure_endpoint,
+                    model="gemini-1.5-flash-001",
+                    temperature=temperature,
+                )
+                       }
     else:
       print("Wrong LLM model selected.")
   
